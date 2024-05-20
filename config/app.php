@@ -184,5 +184,9 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
-
+    
+    
+    
+    // Кастомные переменные
+    'api_version' => env('API_VERSION', 'v1'),
 ];
