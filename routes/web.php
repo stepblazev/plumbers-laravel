@@ -14,5 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return ['Laravel' => app()->version()];
+    return view('index'); // FIXME тестовый шаблон (удалить)
+});
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
 });

@@ -2,7 +2,12 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Container\Container;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Routing\ResponseFactory;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -19,12 +24,54 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Register the exception handling callbacks for the application.
+     * @param  Container  $container
+     * @param  ResponseFactory  $response
      */
-    public function register(): void
+    public function __construct(Container $container, private ResponseFactory $response)
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        parent::__construct($container);
+    }
+    
+    public function render($request, Throwable $exception)
+    {
+        if ($request->wantsJson()) {
+            $response = $this->getApiResponse($exception, parent::render($request, $exception));
+        } else {
+            $response = parent::render($request, $exception);
+        }
+
+        return $response;
+    }
+    
+    private function getApiResponse(Throwable $exception, JsonResponse|RedirectResponse|Response $response)
+    {
+        $debugEnabled = config('app.debug');
+        $statusCode = $response->getStatusCode();
+        $error['message'] = $response->original['message'];
+
+        if (Response::HTTP_UNPROCESSABLE_ENTITY === $statusCode) {
+            $error['errors'] = $response->original['errors'];
+        }
+
+        if (Response::HTTP_INTERNAL_SERVER_ERROR === $statusCode) {
+            if ($debugEnabled) {
+                $error['message'] = $response->original['message'];
+            }
+        }
+
+        $data = [
+            'success' => false,
+            'data' => null,
+            'error' => $error,
+        ];
+
+        if ($debugEnabled) {
+            $debug['file'] = $exception->getFile();
+            $debug['trace'] = $exception->getTrace();
+
+            $data['debug'] = $debug;
+        }
+
+        return $this->response->json($data, $statusCode);
     }
 }

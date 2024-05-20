@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Exceptions\Api\UnauthorizedException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticateAPI
@@ -12,7 +14,10 @@ class AuthenticateAPI
     
     public function handle(Request $request, Closure $next): Response
     {
-        // FIXME Здесь нужно написать логику проверки на авторизованность
-        return $next($request);
+        if (Auth::user()) {
+            return $next($request);
+        }
+
+        throw new UnauthorizedException('Пользователь не авторизован');
     }
 }

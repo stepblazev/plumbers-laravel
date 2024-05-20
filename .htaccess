@@ -4,17 +4,7 @@ DirectoryIndex public/index.php
 
     RewriteEngine On
 
-    # Handle Authorization Header
-    # RewriteCond %{HTTP:Authorization} .
-    # RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-    # Правило 2: Перенаправление запросов файлов и директории /assets/
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_URI} ^/(.*\.(?:js|css|png|jpg|jpeg|webp|gif|svg|ico|docx|html|pdf))$
-    RewriteRule ^(.*)$ /public/$1 [L]
-
-    # Правило 3: Во всех остальных случаях открывать файл /public/index.php
+    # Правило 1: Во всех случаях открывать файл /public/index.php
     RewriteCond %{REQUEST_URI} !^/public/
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

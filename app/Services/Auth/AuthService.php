@@ -2,26 +2,28 @@
 
 namespace App\Services\Auth;
 
-use Illuminate\Auth\Authenticatable;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
+ // FIXME проверить сервис
 class AuthService
 {
-    public function login($email, $password): Authenticatable|null
+    public function login($email, $password): User|null
     {
-        // if (Auth::attempt(['email' => $email, 'password' => $password, 'active' => 1])) {
-        //     return Auth::user();
-        // }
-        // return null;
+        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            session()->regenerate();
+            return Auth::user();
+        }
+        return null;
     }
 
     public function logout()
     {
-        // Auth::logout();
+        Auth::logoutCurrentDevice();
     }
 
-    public function user()
+    public function user(): User|null
     {
-        // return Auth::user();
+        return Auth::user();
     }
 }
