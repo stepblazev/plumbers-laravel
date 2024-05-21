@@ -43,6 +43,8 @@ return [
 
     'models' => [
        // 'namespace' => 'App\\Models\\',
+       'User' => App\Models\User::class,
+       'Role' => App\Models\Role::class,
     ],
 
     /*
