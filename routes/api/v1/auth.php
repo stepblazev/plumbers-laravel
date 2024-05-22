@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\v1\Auth\AuthController;
 use App\Http\Middleware\AuthenticateAPI;
-use App\Http\Middleware\SuperadminOnly;
 
 Route::prefix('v1')->group(function () {
     

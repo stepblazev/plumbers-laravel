@@ -20,7 +20,7 @@ class AuthController extends Controller {
     public function login(Request $request): ApiResponse {
         $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:6'],
+            'password' => ['required', 'string', 'min:4'],
         ]);
 
         $user = $this->authService->login($request->email, $request->password);
