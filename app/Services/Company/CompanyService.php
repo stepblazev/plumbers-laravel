@@ -8,24 +8,13 @@ class CompanyService
 {
     public function __construct() {}
     
-    public function exists(string $companyName): bool
+    public function exists(string $value, string $column = 'id'): bool
     {
-        // ишем компанию по ее названию
-        $targetCompany = Company::where('name', $companyName)->first();
+        // ишем компанию по значению в выбранном столбце (по умолчанию - id)
+        $targetCompany = Company::where($column, $value)->first();
         if ($targetCompany) {
             return true;
         }
         return false;
-    }
-    
-    public function create($adminId, $companyName): Company|null
-    {
-        // создаем новую компанию для нужного админа
-        $company = new Company();
-        $company->admin_id = $adminId;
-        $company->name = $companyName;
-        $company->save();
-        
-        return $company;
     }
 }

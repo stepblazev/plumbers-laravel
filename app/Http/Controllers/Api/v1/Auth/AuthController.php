@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1\Auth;
 
+use App\DTO\Auth\LoginPayload;
 use App\Exceptions\Api\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
@@ -16,29 +17,28 @@ class AuthController extends Controller {
         private ResponseFactory $response
     ) {}
     
-    // Выполнение входа в учетную запись
+    
+    // выполнение входа в учетную запись
     public function login(Request $request): ApiResponse {
-        $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:4'],
-        ]);
-
-        $user = $this->authService->login($request->email, $request->password);
+        $payload = LoginPayload::validateAndCreate($request);
+        $user = $this->authService->login($payload);
         
         if ($user) {
             return $this->response->api($user);
-        } else {
-            throw new NotFoundException('Некорректные данные для входа');
-        }
+        } 
+        
+        throw new NotFoundException('Некорректные данные для входа');
     }
     
-    // Выполнение выхода из учетной записи
+    
+    // выполнение выхода из учетной записи
     public function logout(Request $request): ApiResponse {
         $this->authService->logout();
         return $this->response->api(null);
     }
     
-    // Получение данных текущего пользователя
+    
+    // получение данных текущего пользователя
     public function user(Request $request): ApiResponse {
         $user = $this->authService->user();
         return $this->response->api($user);

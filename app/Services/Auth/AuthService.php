@@ -2,14 +2,16 @@
 
 namespace App\Services\Auth;
 
+use App\DTO\Auth\LoginPayload;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class AuthService
 {
-    public function login($email, $password): User|null
+    // FIXME заменить возращаемый тип (ресурс)
+    public function login(LoginPayload $payload): User|null
     {
-        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+        if (Auth::attempt(['email' => $payload->email, 'password' => $payload->password])) {
             session()->regenerate();
             return Auth::user();
         }
@@ -21,6 +23,7 @@ class AuthService
         Auth::logoutCurrentDevice();
     }
 
+    // FIXME заменить возращаемый тип (ресурс)
     public function user(): User|null
     {
         return Auth::user();

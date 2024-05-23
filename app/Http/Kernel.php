@@ -2,8 +2,8 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\AuthenticateAPI;
-use App\Http\Middleware\SuperadminOnly;
+use App\Http\Middleware\Api\Authenticate;
+use App\Http\Middleware\Api\SuperadminOnly;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -67,7 +67,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
         
-        AuthenticateAPI::ALIAS => AuthenticateAPI::class,
+        Authenticate::ALIAS => Authenticate::class,
         SuperadminOnly::ALIAS => SuperadminOnly::class
     ];
 }

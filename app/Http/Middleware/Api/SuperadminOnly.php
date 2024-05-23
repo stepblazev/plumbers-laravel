@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Api;
 
 use Closure;
 use App\Enums\RoleType;
@@ -17,9 +17,10 @@ class SuperadminOnly
     {
         $user = Auth::user();
 
-        if ($user && $user->role()->first()->name == RoleType::SUPERADMIN) {
+        // NOTE снять коммент
+        // if ($user && $user->role()->first()->name == RoleType::SUPERADMIN->value) {
             return $next($request);
-        }
+        // }
         
         throw new ForbiddenException('Доступ запрещен');
     }
