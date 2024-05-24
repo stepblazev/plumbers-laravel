@@ -3,17 +3,20 @@
 namespace App\Services\Auth;
 
 use App\DTO\Auth\LoginPayload;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
+// NOTE можно заменить возращаемый тип на spatie data
+
 class AuthService
 {
-    // FIXME заменить возращаемый тип (ресурс)
-    public function login(LoginPayload $payload): User|null
+    public function login(LoginPayload $payload): UserResource|null
     {
         if (Auth::attempt(['email' => $payload->email, 'password' => $payload->password])) {
             session()->regenerate();
-            return Auth::user();
+            $user = User::with('role')->find(Auth::user()->id);
+            return new UserResource($user);
         }
         return null;
     }
@@ -23,9 +26,13 @@ class AuthService
         Auth::logoutCurrentDevice();
     }
 
-    // FIXME заменить возращаемый тип (ресурс)
-    public function user(): User|null
+    public function user(): UserResource|null
     {
-        return Auth::user();
+        $user = Auth::user();
+        if ($user) {
+            $user = User::with('role')->find($user->id);
+            return new UserResource($user);
+        }
+        return null;
     }
 }

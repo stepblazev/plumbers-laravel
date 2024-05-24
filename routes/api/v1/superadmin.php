@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\v1\Admin\AdminController;
+use App\Http\Controllers\Api\v1\Superadmin\AdminController;
+use App\Http\Controllers\Api\v1\Superadmin\PermissionController;
 use App\Http\Middleware\Api\SuperadminOnly;
 
 Route::prefix('v1')->group(function () {
@@ -16,6 +17,9 @@ Route::prefix('v1')->group(function () {
         // обновление и удаление админа
         Route::put('/admin/{id}', [AdminController::class, 'update']);
         Route::delete('/admin/{id}', [AdminController::class, 'delete']);
+        
+        // полчуние списка всех возможных разрешений
+        Route::get('/permissions', [PermissionController::class, 'permissions']);
         
     });
 });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Admin;
+namespace App\Http\Controllers\Api\v1\Superadmin;
 
 use App\DTO\User\CreateAdminPayload;
 use App\DTO\User\DeleteAdminPayload;

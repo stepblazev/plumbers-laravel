@@ -4,7 +4,6 @@ namespace App\Services\User;
 
 use App\Models\User;
 use App\Services\Auth\AuthService;
-use App\Services\Company\CompanyService;
 
 class UserService
 {

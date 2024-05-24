@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources\User;
 
-use App\Http\Resources\Company\CompanyResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AdminResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,8 +23,6 @@ class AdminResource extends JsonResource
             'phone' => $this->phone,
             'avatar' => $this->avatar,
             'created_at' => $this->created_at,
-            'employees_count' => $this->employeesCount(),
-            'company' => new CompanyResource($this->whenLoaded('company')),
             'role' => new RoleResource($this->whenLoaded('role')),
         ];
     }

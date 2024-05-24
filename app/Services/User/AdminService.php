@@ -14,8 +14,9 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\Auth\AuthService;
 use App\Services\Company\CompanyService;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+
+// NOTE можно изменить возращаемый тип на spatie data
 
 class AdminService
 {
@@ -37,7 +38,6 @@ class AdminService
     }
 
 
-    // FIXME нужно изменить возращаемый тип (spatie data)
     public function create(CreateAdminPayload $payload): AdminResource
     {
         // получаем пользователя который создает нового админа
@@ -61,19 +61,18 @@ class AdminService
         $company->name = $payload->company_name;
         $company->admin()->associate($admin);
         $company->save();
-        
+
         $admin = User::with('role')->with('company')->find($admin->id);
         return new AdminResource($admin);
     }
 
 
-    // FIXME нужно изменить возращаемый тип (spatie data)
-    public function getFiltered(GetAdminsPayload $payload): AnonymousResourceCollection
+    public function getFiltered(GetAdminsPayload $payload): ResourceCollection
     {
         // приводим искому подстроку к нижнему регистру
         $payload->search = mb_strtolower($payload->search);
 
-        $admins = User::with('role')->with('company')->whereHas('role', function ($query) {
+        $admins = User::with('role')->with('company.permissions')->whereHas('role', function ($query) {
             $query->where('name', RoleType::ADMIN->value);
         })
             ->where(function ($query) use ($payload) {
@@ -89,11 +88,10 @@ class AdminService
     }
 
 
-    // FIXME нужно изменить возращаемый тип (spatie data)
     public function getDetail(GetDetailAdminPayload $payload): AdminResource
     {
         $admin = User::with('role')
-            ->with('company')
+            ->with('company.permissions')
             ->whereHas('role', function ($query) {
                 $query->where('name', RoleType::ADMIN->value);
             })
@@ -103,11 +101,10 @@ class AdminService
     }
 
 
-    // FIXME нужно изменить возращаемый тип (spatie data)
     public function update(UpdateAdminPayload $payload): AdminResource
     {
         // получаем нужного админа вместе с его компанией
-        $admin = User::with('company')->find($payload->id);
+        $admin = User::with('company.permissions')->find($payload->id);
 
         // обновляем данные компании админа
         if ($payload->company_name) {
@@ -116,8 +113,8 @@ class AdminService
         if ($payload->storage_limit) {
             $admin->company->storage_limit = $payload->storage_limit;
         }
-        if ($payload->permissions) {
-            // TODO ... обновляем список разрешений
+        if (is_array($payload->permission_ids)) {
+            $admin->company->syncPermissions($payload->permission_ids);
         }
         $admin->company->save();
 

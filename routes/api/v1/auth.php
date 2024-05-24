@@ -7,6 +7,6 @@ Route::prefix('v1')->group(function () {
     
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware(Authenticate::ALIAS);
-    Route::post('/user', [AuthController::class, 'user'])->middleware(Authenticate::ALIAS);
+    Route::get('/user', [AuthController::class, 'user'])->middleware(Authenticate::ALIAS);
 
 });

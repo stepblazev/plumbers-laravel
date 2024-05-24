@@ -48,6 +48,6 @@ class UpdateAdminPayload extends Data
     #[Between(0, 1000)]
     public ?int $storage_limit;
 
-    #[ArrayType('string')]
-    public ?array $permissions;
+    #[ArrayType()]
+    public ?array $permission_ids;
 }
