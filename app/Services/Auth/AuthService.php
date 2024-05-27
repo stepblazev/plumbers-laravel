@@ -12,9 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class AuthService
 {
     public function login(LoginPayload $payload): UserResource|null
-    {
+    {      
         if (Auth::attempt(['email' => $payload->email, 'password' => $payload->password])) {
-            session()->regenerate();
             $user = User::with('role')->find(Auth::user()->id);
             return new UserResource($user);
         }
@@ -23,7 +22,7 @@ class AuthService
 
     public function logout()
     {
-        Auth::logoutCurrentDevice();
+        Auth::logout();
     }
 
     public function user(): UserResource|null

@@ -18,9 +18,9 @@ class SuperadminOnly
         $user = Auth::user();
 
         // NOTE снять коммент
-        // if ($user && $user->role()->first()->name == RoleType::SUPERADMIN->value) {
+        if ($user && $user->role()->first()->name == RoleType::SUPERADMIN->value) {
             return $next($request);
-        // }
+        }
         
         throw new ForbiddenException('Доступ запрещен');
     }

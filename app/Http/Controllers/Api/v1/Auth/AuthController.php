@@ -24,6 +24,7 @@ class AuthController extends Controller {
         $user = $this->authService->login($payload);
         
         if ($user) {
+            $request->session()->regenerate();
             return $this->response->api($user);
         } 
         
@@ -34,6 +35,8 @@ class AuthController extends Controller {
     // выполнение выхода из учетной записи
     public function logout(Request $request): ApiResponse {
         $this->authService->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return $this->response->api(null);
     }
     
