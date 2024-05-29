@@ -23,6 +23,22 @@ class Company extends Model
     }
     
     
+    public function employees_count(): BelongsTo
+    {
+        // FIXME костыль на получение кол-ва работников
+        return $this->belongsTo(User::class)->withDefault(function () {
+            $adminId = $this->admin_id;
+            $employees = User::where('active', true)
+                ->where(function($query) use ($adminId) {
+                    $query->where('id', $adminId)
+                        ->orWhere('created_by', $adminId);
+                })
+                ->get();
+            return $employees->count();
+        });
+    }
+    
+    
     /** Добавляет новое разрешение для компании */
     public function addPermission(int $permissionId): void
     {

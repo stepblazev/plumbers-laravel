@@ -17,6 +17,7 @@ class AdminResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'active' => boolval($this->active),
             'name' => $this->name,
             'short_name' => $this->short_name,
             'birth_date' => $this->birth_date,
@@ -24,9 +25,8 @@ class AdminResource extends JsonResource
             'phone' => $this->phone,
             'avatar' => $this->avatar,
             'created_at' => $this->created_at,
-            'employees_count' => $this->employeesCount(),
-            'company' => new CompanyResource($this->whenLoaded('company')),
-            'role' => new RoleResource($this->whenLoaded('role')),
+            'role' => new RoleResource($this->role),
+            'company' => new CompanyResource($this->company),
         ];
     }
 }

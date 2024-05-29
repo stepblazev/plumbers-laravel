@@ -13,8 +13,8 @@ class AuthService
 {
     public function login(LoginPayload $payload): UserResource|null
     {      
-        if (Auth::attempt(['email' => $payload->email, 'password' => $payload->password])) {
-            $user = User::with('role')->find(Auth::user()->id);
+        if (Auth::attempt(['active' => true, 'email' => $payload->email, 'password' => $payload->password])) {
+            $user = User::find(Auth::id());
             return new UserResource($user);
         }
         return null;
@@ -27,9 +27,9 @@ class AuthService
 
     public function user(): UserResource|null
     {
-        $user = Auth::user();
-        if ($user) {
-            $user = User::with('role')->find($user->id);
+        $id = Auth::id();
+        if ($id) {
+            $user = User::find($id);
             return new UserResource($user);
         }
         return null;

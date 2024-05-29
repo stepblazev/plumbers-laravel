@@ -18,7 +18,8 @@ class CompanyResource extends JsonResource
             'name' => $this->name,
             'logo' => $this->logo,
             'storage_limit' => $this->storage_limit,
-            'permissions' => CompanyPermissionResource::collection($this->whenLoaded('permissions')),
+            'employees_count' => $this->employees_count,
+            'permissions' => $this->permissions,
         ];
     }
 }

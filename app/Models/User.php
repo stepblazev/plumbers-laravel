@@ -54,30 +54,33 @@ class User extends \TCG\Voyager\Models\User
     {
         return $this->belongsTo(Role::class);
     }
-
     
-    public function company(): HasOne
-    {
-        return $this->hasOne(Company::class, 'admin_id');
-    }
-
     
-    public function employees(): HasMany
-    {
-        return $this->hasMany(User::class, 'created_by', 'id');
-    }
-
-    
-    public function createdBy(): BelongsTo
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
+    
+    
+    public function company_relation(): HasOne
+    {
+        return $this->hasOne(Company::class, 'admin_id');
+    }
+    
+    
+    public function company(): HasOne
+    {
+        $admin = $this->getAdminForUser($this);
+        return $admin->company_relation();
+    }
 
     
-    /** Возращает кол-во пользователей, которые были созданы текущим пользователем */
-    public function employeesCount(): int
+    private function getAdminForUser(User $user)
     {
-        return $this->employees()->count();
+        while ($user->created_by) {
+            $user = $user->creator;
+        }
+        return $user;
     }
 
 }

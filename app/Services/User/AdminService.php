@@ -72,7 +72,7 @@ class AdminService
         // приводим искому подстроку к нижнему регистру
         $payload->search = mb_strtolower($payload->search);
 
-        $admins = User::with('role')->with('company.permissions')->whereHas('role', function ($query) {
+        $admins = User::whereHas('role', function ($query) {
             $query->where('name', RoleType::ADMIN->value);
         })
             ->where(function ($query) use ($payload) {
@@ -90,9 +90,7 @@ class AdminService
 
     public function getDetail(GetDetailAdminPayload $payload): AdminResource
     {
-        $admin = User::with('role')
-            ->with('company.permissions')
-            ->whereHas('role', function ($query) {
+        $admin = User::whereHas('role', function ($query) {
                 $query->where('name', RoleType::ADMIN->value);
             })
             ->find($payload->id);
@@ -104,7 +102,7 @@ class AdminService
     public function update(UpdateAdminPayload $payload): AdminResource
     {
         // получаем нужного админа вместе с его компанией
-        $admin = User::with('company.permissions')->find($payload->id);
+        $admin = User::find($payload->id);
 
         // обновляем данные компании админа
         if ($payload->company_name) {
