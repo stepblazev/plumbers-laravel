@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Services\Auth\AuthService;
 use App\Services\Company\CompanyService;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 // NOTE можно изменить возращаемый тип на spatie data
 
@@ -23,7 +24,8 @@ class AdminService
 
     public function __construct(
         private AuthService $authService,
-        private CompanyService $companyService
+        private CompanyService $companyService,
+        private ImageService $imageService
     ) {
     }
 
@@ -41,7 +43,7 @@ class AdminService
     public function create(CreateAdminPayload $payload): AdminResource
     {
         // получаем пользователя который создает нового админа
-        $creator = $this->authService->user();
+        $creator = Auth::user();
 
         // находим роль админа
         $adminRole = Role::where(['name' => RoleType::ADMIN->value])->first();
@@ -49,7 +51,12 @@ class AdminService
         // создаем нового админа
         $admin = new User();
         $admin->role()->associate($adminRole);
-        $admin->createdBy()->associate($creator);
+        $admin->creator()->associate($creator);
+        
+        if ($payload->image) {
+            $admin->avatar = $this->imageService->saveImage($payload->image, 'users');
+        }
+        
         $admin->name = $payload->fio;
         $admin->email = $payload->email;
         $admin->phone = $payload->phone;
@@ -82,7 +89,7 @@ class AdminService
                     // выполняем поиск в подстроке названия организации (с нижним регистром)
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$payload->search}%"]);
                 });
-            })->get();
+            })->orderByDesc('id')->get();
 
         return AdminResource::collection($admins);
     }

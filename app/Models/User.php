@@ -77,7 +77,7 @@ class User extends \TCG\Voyager\Models\User
     
     private function getAdminForUser(User $user)
     {
-        while ($user->created_by) {
+        while ($user->created_by && $user->created_by !== 1) {
             $user = $user->creator;
         }
         return $user;

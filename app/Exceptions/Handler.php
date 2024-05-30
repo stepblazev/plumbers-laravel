@@ -67,6 +67,7 @@ class Handler extends ExceptionHandler
 
         if ($debugEnabled) {
             $debug['file'] = $exception->getFile();
+            $debug['line'] = $exception->getLine();
             $debug['trace'] = $exception->getTrace();
 
             $data['debug'] = $debug;
