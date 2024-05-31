@@ -14,6 +14,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\Auth\AuthService;
 use App\Services\Company\CompanyService;
+use App\Services\ImageService;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
@@ -89,7 +90,9 @@ class AdminService
                     // выполняем поиск в подстроке названия организации (с нижним регистром)
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$payload->search}%"]);
                 });
-            })->orderByDesc('id')->get();
+            })
+            ->orderBy($payload->order_column ?? 'id', $payload->order_by ?? 'DESC')
+            ->paginate($payload->per_page, ['*'], 'page', $payload->page);
 
         return AdminResource::collection($admins);
     }

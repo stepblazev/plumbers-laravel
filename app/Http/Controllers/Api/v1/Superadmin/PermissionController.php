@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\v1\Superadmin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
-use App\Services\PermissionService;
+use App\Services\Company\PermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 

@@ -2,10 +2,10 @@
 
 namespace App\DTO\User;
 
+use App\DTO\PaginationAndOrderPayload;
 use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Data;
 
-class GetAdminsPayload extends Data {
+class GetAdminsPayload extends PaginationAndOrderPayload {
     #[Max(255)]
     public ?string $search;
 }
