@@ -11,7 +11,7 @@ class ApiResponse extends JsonResponse
      * @param $status
      * @param $headers
      */
-    public function __construct(public $data = null, $status = self::HTTP_OK, $headers = []) {
+    public function __construct(public $data = null, public $meta = null, $status = self::HTTP_OK, $headers = []) {
         parent::__construct($this->makeData(), $status, $headers);
     }
 
@@ -23,6 +23,7 @@ class ApiResponse extends JsonResponse
         return [
             'success' => true,
             'data' => $this->data,
+            'meta' => $this->meta,
             'error' => null,
         ];
     }

@@ -85,7 +85,7 @@ class AdminService
         })
             ->where(function ($query) use ($payload) {
                 // выполняем поиск подстроки в email админов
-                $query->whereRaw('email LIKE ?', ["%{$payload->search}%"])
+                $query->whereRaw('LOWER(email) LIKE ? OR LOWER(name) LIKE ?', ["%{$payload->search}%", "%{$payload->search}%"])
                     ->orWhereHas('company', function ($query) use ($payload) {
                     // выполняем поиск в подстроке названия организации (с нижним регистром)
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$payload->search}%"]);
@@ -95,6 +95,28 @@ class AdminService
             ->paginate($payload->per_page, ['*'], 'page', $payload->page);
 
         return AdminResource::collection($admins);
+    }
+
+    
+    public function getFilteredTotalCount(GetAdminsPayload $payload): int
+    {
+        // приводим искому подстроку к нижнему регистру
+        $payload->search = mb_strtolower($payload->search);
+
+        $count = User::whereHas('role', function ($query) {
+            $query->where('name', RoleType::ADMIN->value);
+        })
+            ->where(function ($query) use ($payload) {
+                // выполняем поиск подстроки в email админов
+                $query->whereRaw('LOWER(email) LIKE ? OR LOWER(name) LIKE ?', ["%{$payload->search}%", "%{$payload->search}%"])
+                    ->orWhereHas('company', function ($query) use ($payload) {
+                    // выполняем поиск в подстроке названия организации (с нижним регистром)
+                    $query->whereRaw('LOWER(name) LIKE ?', ["%{$payload->search}%"]);
+                });
+            })
+            ->count();
+
+        return $count;
     }
 
 

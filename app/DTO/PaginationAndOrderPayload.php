@@ -16,6 +16,6 @@ class PaginationAndOrderPayload extends Data {
     #[Max(255)]
     public ?string $order_column;
     
-    #[Max(255)]
+    #[Max(4)]
     public ?string $order_by;
 }

@@ -22,8 +22,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $response = app(ResponseFactory::class);
-        $response->macro('api', function($data = null, $status = 200, $headers = []) {
-           return new ApiResponse($data, $status, $headers); 
+        $response->macro('api', function($data = null, $meta = null, $status = 200, $headers = []) {
+           return new ApiResponse($data, $meta, $status, $headers); 
         });
     }
 }

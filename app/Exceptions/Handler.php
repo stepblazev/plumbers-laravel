@@ -62,6 +62,7 @@ class Handler extends ExceptionHandler
         $data = [
             'success' => false,
             'data' => null,
+            'meta' => null,
             'error' => $error,
         ];
 
