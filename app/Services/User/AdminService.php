@@ -17,6 +17,7 @@ use App\Services\Company\CompanyService;
 use App\Services\ImageService;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 // NOTE можно изменить возращаемый тип на spatie data
 
@@ -137,7 +138,7 @@ class AdminService
         $admin = User::find($payload->id);
 
         // обновляем данные компании админа
-        if ($payload->company_name) {
+        if ($payload->company_name && $admin->company->name !== $payload->company_name) {
             $admin->company->name = $payload->company_name;
         }
         if ($payload->storage_limit) {
@@ -147,10 +148,21 @@ class AdminService
             $admin->company->syncPermissions($payload->permission_ids);
         }
         $admin->company->save();
-
+        
         // обновляем данные самого админа
         if (isset($payload->active)) {
             $admin->active = $payload->active;
+        }
+        if ($payload->image) {
+            // FIXME костыль (чтобы устанавливать default аватарку нужно было пробрасывать NULL, 
+            // но Spatie всегда ставит NULL после валидации если нет значения). 
+            // NOTE Возможное решение: удалить стандартное значение автарки в БД и ставить его на фронте
+            if ($payload->image->getBasename() === 'default') {
+                Storage::disk('public')->delete($admin->avatar); // удаляем старую аватарку
+                $admin->avatar = 'users/default.png'; // устанавливаем новую
+            } else {
+                $admin->avatar = $this->imageService->saveImage($payload->image, 'users'); // устанавливаем новую
+            }
         }
         if ($payload->fio) {
             $admin->name = $payload->fio;
@@ -158,7 +170,7 @@ class AdminService
         if ($payload->short_name) {
             $admin->short_name = $payload->short_name;
         }
-        if ($payload->phone) {
+        if (is_string($payload->phone) || (is_string($payload->phone) && strlen($payload->phone) === 0)) {
             $admin->phone = $payload->phone;
         }
         if ($payload->password) {
@@ -177,6 +189,8 @@ class AdminService
             $query->where('name', RoleType::ADMIN->value);
         })->find($payload->id);
 
+        Storage::disk('public')->delete($admin->avatar);
+        
         return $admin->delete();
     }
 

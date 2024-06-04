@@ -45,13 +45,13 @@ class AdminController extends Controller
     {
         $data = array_merge($request->all(), ['id' => $request->id]);
         $payload = GetDetailAdminPayload::validateAndCreate($data);
-        $admin = $this->adminService->getDetail($payload);
-
-        if ($admin) {
-            return $this->response->api($admin);
+        
+        if (!$this->adminService->isAdmin($payload->id)) {
+            throw new NotFoundException('Пользователь не найден, либо не является админом');
         }
-
-        throw new NotFoundException('Пользователь не найден, либо не является админом');
+        
+        $admin = $this->adminService->getDetail($payload);
+        return $this->response->api($admin);
     }
 
 
@@ -64,7 +64,7 @@ class AdminController extends Controller
         }
 
         if ($this->companyService->exists($payload->company_name, 'name')) {
-            throw new AlreadyExistsException('Компания с таким названием уже существует');
+            throw new AlreadyExistsException('Организация с таким названием уже существует');
         }
 
         $admin = $this->adminService->create($payload);
@@ -80,8 +80,11 @@ class AdminController extends Controller
         if (!$this->adminService->isAdmin($payload->id)) {
             throw new NotFoundException('Пользователь не найден, либо не является админом');
         }
+        if ($payload->email && $this->userService->exists($payload->email, 'email')) {
+            throw new AlreadyExistsException('Пользователь с таким Email уже существует');
+        }
         if ($payload->company_name && $this->companyService->exists($payload->company_name, 'name')) {
-            throw new AlreadyExistsException('Компания с таким названием уже существует');
+            throw new AlreadyExistsException('Организация с таким названием уже существует');
         }
 
         $updatedAdmin = $this->adminService->update($payload);
