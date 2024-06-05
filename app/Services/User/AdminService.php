@@ -153,22 +153,27 @@ class AdminService
         if (isset($payload->active)) {
             $admin->active = $payload->active;
         }
-        if ($payload->image) {
-            // FIXME костыль (чтобы устанавливать default аватарку нужно было пробрасывать NULL, 
-            // но Spatie всегда ставит NULL после валидации если нет значения). 
-            // NOTE Возможное решение: удалить стандартное значение автарки в БД и ставить его на фронте
-            if ($payload->image->getBasename() === 'default') {
+        
+        if (is_null($payload->image)) {
+            if ($admin->avatar) {
                 Storage::disk('public')->delete($admin->avatar); // удаляем старую аватарку
-                $admin->avatar = 'users/default.png'; // устанавливаем новую
-            } else {
-                $admin->avatar = $this->imageService->saveImage($payload->image, 'users'); // устанавливаем новую
             }
+            $admin->avatar = null; // устанавливаем null
+        } else if ($payload->image->getClientOriginalName() !== pathinfo($admin->avatar, PATHINFO_BASENAME)) {
+            if ($admin->avatar) {
+                Storage::disk('public')->delete($admin->avatar); // удаляем старую аватарку
+            }
+            $admin->avatar = $this->imageService->saveImage($payload->image, 'users'); // сохраняем и устанавливаем новую
         }
+        
         if ($payload->fio) {
             $admin->name = $payload->fio;
         }
         if ($payload->short_name) {
             $admin->short_name = $payload->short_name;
+        }
+        if ($payload->email) {
+            $admin->email = $payload->email;
         }
         if (is_string($payload->phone) || (is_string($payload->phone) && strlen($payload->phone) === 0)) {
             $admin->phone = $payload->phone;

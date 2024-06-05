@@ -75,6 +75,9 @@ class AdminController extends Controller
     public function update(Request $request): ApiResponse
     {
         $data = array_merge($request->all(), ['id' => $request->id]);
+        if (isset($data['active'])) {
+            $data['active'] = filter_var($data['active'], FILTER_VALIDATE_BOOLEAN);
+        }
         $payload = UpdateAdminPayload::validateAndCreate($data);
 
         if (!$this->adminService->isAdmin($payload->id)) {
