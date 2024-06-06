@@ -75,9 +75,17 @@ class AdminController extends Controller
     public function update(Request $request): ApiResponse
     {
         $data = array_merge($request->all(), ['id' => $request->id]);
-        if (isset($data['active'])) {
+        
+        // FIXME костыль c аватаркой из-за Spatie который всегда ставит NULL :(
+        $hasImage = array_key_exists('image', $data);
+        if ($hasImage && $data['image'] === 'null') {
+            $data['image'] = null;
+        }
+
+        if (array_key_exists('active', $data)) {
             $data['active'] = filter_var($data['active'], FILTER_VALIDATE_BOOLEAN);
         }
+        
         $payload = UpdateAdminPayload::validateAndCreate($data);
 
         if (!$this->adminService->isAdmin($payload->id)) {
@@ -90,7 +98,7 @@ class AdminController extends Controller
             throw new AlreadyExistsException('Организация с таким названием уже существует');
         }
 
-        $updatedAdmin = $this->adminService->update($payload);
+        $updatedAdmin = $this->adminService->update($payload, $hasImage);
         return $this->response->api($updatedAdmin);
     }
 

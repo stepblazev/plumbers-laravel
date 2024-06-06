@@ -15,7 +15,7 @@ use Spatie\LaravelData\Data;
 class CreateAdminPayload extends Data {
     #[File]
     #[Mimes('png', 'jpg', 'jpeg')]
-    #[Nullable]
+    #[Nullable()]
     public ?UploadedFile $image;
     
     #[Max(255)]

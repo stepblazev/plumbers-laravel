@@ -132,7 +132,7 @@ class AdminService
     }
 
 
-    public function update(UpdateAdminPayload $payload): AdminResource
+    public function update(UpdateAdminPayload $payload, bool $hasImage): AdminResource
     {
         // получаем нужного админа вместе с его компанией
         $admin = User::find($payload->id);
@@ -154,12 +154,12 @@ class AdminService
             $admin->active = $payload->active;
         }
         
-        if (is_null($payload->image)) {
+        if ($hasImage && is_null($payload->image)) {
             if ($admin->avatar) {
                 Storage::disk('public')->delete($admin->avatar); // удаляем старую аватарку
             }
             $admin->avatar = null; // устанавливаем null
-        } else if ($payload->image->getClientOriginalName() !== pathinfo($admin->avatar, PATHINFO_BASENAME)) {
+        } else if ($hasImage && $payload->image->getClientOriginalName() !== pathinfo($admin->avatar, PATHINFO_BASENAME)) {
             if ($admin->avatar) {
                 Storage::disk('public')->delete($admin->avatar); // удаляем старую аватарку
             }
@@ -194,7 +194,9 @@ class AdminService
             $query->where('name', RoleType::ADMIN->value);
         })->find($payload->id);
 
-        Storage::disk('public')->delete($admin->avatar);
+        if ($admin->avatar) {
+            Storage::disk('public')->delete($admin->avatar);
+        }
         
         return $admin->delete();
     }
