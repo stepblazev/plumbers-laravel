@@ -25,7 +25,7 @@ class UpdateAdminPayload extends Data
     public ?bool $active;
 
     #[File]
-    #[Mimes('png', 'jpg', 'jpeg')]
+    #[Mimes('png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico')]
     #[Nullable()]
     public ?UploadedFile $image;
     

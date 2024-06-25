@@ -14,7 +14,7 @@ use Spatie\LaravelData\Data;
 
 class CreateAdminPayload extends Data {
     #[File]
-    #[Mimes('png', 'jpg', 'jpeg')]
+    #[Mimes('png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp', 'svg', 'ico')]
     #[Nullable()]
     public ?UploadedFile $image;
     

@@ -85,6 +85,10 @@ class AdminController extends Controller
         if (array_key_exists('active', $data)) {
             $data['active'] = filter_var($data['active'], FILTER_VALIDATE_BOOLEAN);
         }
+
+        if (array_key_exists('permission_ids', $data)) {
+            $data['permission_ids'] = explode(',', $data['permission_ids']);
+        }
         
         $payload = UpdateAdminPayload::validateAndCreate($data);
 
