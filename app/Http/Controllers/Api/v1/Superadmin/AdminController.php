@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Api\v1\Superadmin;
 
-use App\DTO\User\CreateAdminPayload;
-use App\DTO\User\DeleteAdminPayload;
-use App\DTO\User\GetAdminsPayload;
-use App\DTO\User\GetDetailAdminPayload;
-use App\DTO\User\UpdateAdminPayload;
+use App\DTO\Admin\CreateAdminPayload;
+use App\DTO\Admin\DeleteAdminPayload;
+use App\DTO\Admin\GetAdminsPayload;
+use App\DTO\Admin\GetDetailAdminPayload;
+use App\DTO\Admin\UpdateAdminPayload;
 use App\Exceptions\Api\AlreadyExistsException;
 use App\Exceptions\Api\NotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Responses\ApiResponse;
 use App\Services\Company\CompanyService;
-use App\Services\User\AdminService;
+use App\Services\Company\AdminService;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;

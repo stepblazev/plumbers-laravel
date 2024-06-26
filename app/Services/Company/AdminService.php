@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services\User;
+namespace App\Services\Company;
 
-use App\DTO\User\CreateAdminPayload;
-use App\DTO\User\DeleteAdminPayload;
-use App\DTO\User\GetAdminsPayload;
-use App\DTO\User\GetDetailAdminPayload;
-use App\DTO\User\UpdateAdminPayload;
+use App\DTO\Admin\CreateAdminPayload;
+use App\DTO\Admin\DeleteAdminPayload;
+use App\DTO\Admin\GetAdminsPayload;
+use App\DTO\Admin\GetDetailAdminPayload;
+use App\DTO\Admin\UpdateAdminPayload;
 use App\Enums\RoleType;
 use App\Http\Resources\User\AdminResource;
 use App\Models\Company;

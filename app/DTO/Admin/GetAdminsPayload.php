@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO\User;
+namespace App\DTO\Admin;
 
 use App\DTO\PaginationAndOrderPayload;
 use Spatie\LaravelData\Attributes\Validation\Max;

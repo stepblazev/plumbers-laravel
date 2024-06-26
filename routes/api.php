@@ -15,3 +15,4 @@ $version = config('app.api_version');
 
 require_once "api/$version/auth.php";
 require_once "api/$version/superadmin.php";
+require_once "api/$version/news.php";

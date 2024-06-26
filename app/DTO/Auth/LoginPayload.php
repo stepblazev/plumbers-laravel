@@ -17,11 +17,6 @@ class LoginPayload extends Data {
     public string $email;
     
     #[Required()]
-    #[Password(
-        min: 4,
-        letters: true,
-        mixedCase: true,
-        numbers: true
-    )]
+    #[Password(min: 4)]
     public string $password;
 }
