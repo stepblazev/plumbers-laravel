@@ -3,6 +3,8 @@
 namespace App\Http;
 
 use App\Http\Middleware\Api\Authenticate;
+use App\Http\Middleware\Api\CompanyOnly;
+use App\Http\Middleware\Api\NewsControl;
 use App\Http\Middleware\Api\SuperadminOnly;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -68,6 +70,8 @@ class Kernel extends HttpKernel
         'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
         
         Authenticate::ALIAS => Authenticate::class,
+        NewsControl::ALIAS => NewsControl::class,
+        CompanyOnly::ALIAS => CompanyOnly::class,
         SuperadminOnly::ALIAS => SuperadminOnly::class
     ];
 }

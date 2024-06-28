@@ -9,17 +9,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminOnly
+class NewsControl
 {
-    const ALIAS = 'adminonly';
+    const ALIAS = 'newscontrol.api';
 
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
 
         if ($user && (
-            $user->role()->first()->name == RoleType::ADMIN->value || 
-            $user->role()->first()->name == RoleType::SUBADMIN->value
+            $user->role->name == RoleType::ADMIN->value || 
+            $user->role->name == RoleType::SUBADMIN->value ||
+            $user->role->name == RoleType::LOGIST->value
         )) {
             return $next($request);
         }

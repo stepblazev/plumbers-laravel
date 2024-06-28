@@ -9,15 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class SuperadminOnly
+class CompanyOnly
 {
-    const ALIAS = 'superadminonly.api';
+    const ALIAS = 'companyonly.api';
 
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
 
-        if ($user && $user->role->name == RoleType::SUPERADMIN->value) {
+        if ($user && $user->role->name != RoleType::SUPERADMIN->value) {
             return $next($request);
         }
         
